@@ -1,2 +1,3 @@
 FROM python:3.7
-RUN pip install h2o-wave
+COPY ./docker/python/requirements.txt requirements.txt
+RUN pip --default-timeout=100 install -r requirements.txt
