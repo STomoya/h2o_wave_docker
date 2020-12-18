@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: ./docker/wave/Dockerfile
       args:
-        - VERSION=0.10.0
+        - WAVE_VERSION=0.10.0
     working_dir: /usr/wave
     command: ./waved
     ports:
