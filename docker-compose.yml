@@ -20,6 +20,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/wave/Dockerfile
+      args:
+        - VERSION=0.10.0
     working_dir: /usr/wave
     command: ./waved
     ports:

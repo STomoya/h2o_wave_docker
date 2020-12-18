@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ARG VERSION=0.10.0
+ARG VERSION
 
 RUN apt update -y \
     && apt upgrade -y \
