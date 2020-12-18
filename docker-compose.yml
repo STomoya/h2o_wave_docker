@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    working_dir: /usr/src
+    environment:
+      # https://h2oai.github.io/wave/docs/configuration#configuring-your-app
+      - H2O_APP_ADDRESS=http://server:8000
+      - H2O_WAVE_ADDRESS=http://server:10101
+    volumes:
+      - .:/usr/src
+    depends_on:
+      - server
+    tty: true
+
+  server:
+    build:
+      context: .
+      dockerfile: ./docker/wave/Dockerfile
+    working_dir: /usr/wave
+    command: ./waved
+    ports:
+      - '10101:10101'
