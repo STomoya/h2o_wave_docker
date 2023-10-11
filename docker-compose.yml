@@ -1,7 +1,23 @@
+---
 version: '3'
 
+networks:
+  default:
+     driver: host
+
 services:
+  server:
+    image: h2o_wave:0.10.0
+    build:
+      context: .
+      dockerfile: ./docker/wave/Dockerfile
+      args:
+        - WAVE_VERSION=0.10.0
+    ports:
+      - '10101:10101/tcp'
+
   app:
+    image: h2o_app:py3.7
     build:
       context: .
       dockerfile: ./docker/python/Dockerfile
@@ -16,13 +32,15 @@ services:
       - server
     tty: true
 
-  server:
-    build:
-      context: .
-      dockerfile: ./docker/wave/Dockerfile
-      args:
-        - WAVE_VERSION=0.10.0
-    working_dir: /usr/wave
-    command: ./waved
+  notebook:
+    image: jupyter/minimal-notebook
+    environment:
+      JUPYTER_ENABLE_LAB: 'yes'
+      JUPYTER_TOKEN: 'docker'
+    restart: unless-stopped
     ports:
-      - '10101:10101'
+      - '8888:8888/tcp'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - .:/project
+...
