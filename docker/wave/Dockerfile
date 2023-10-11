@@ -1,17 +1,19 @@
-FROM ubuntu:23.04
+FROM alpine:edge
 
-ARG WAVE_VERSION
+ARG WAVE_VERSION=1.0.0
 ARG PORT=10101
 
-RUN apt update -y \
-    && apt upgrade -y \
-    && apt install -y \
-    curl
+RUN apk add curl ca-certificates git gcompat
 
-RUN curl -L https://github.com/h2oai/wave/releases/download/v${WAVE_VERSION}/wave-${WAVE_VERSION}-linux-amd64.tar.gz -o wave-${WAVE_VERSION}-linux-amd64.tar.gz \
-    && tar -xzf wave-${WAVE_VERSION}-linux-amd64.tar.gz \
-    && mv wave-${WAVE_VERSION}-linux-amd64 /usr/wave
+WORKDIR /opt/wave
+
+RUN curl -sL \
+      https://github.com/h2oai/wave/releases/download/v${WAVE_VERSION}/wave-${WAVE_VERSION}-linux-amd64.tar.gz \
+      | tar -xzf- -C /opt/wave --strip-components=1 wave-${WAVE_VERSION}-linux-amd64
+
+EXPOSE ${PORT}
+EXPOSE 8000
 
 ENV H2O_WAVE_LISTEN=0.0.0.0:${PORT}
-EXPOSE ${PORT}
-ENTRYPOINT /usr/wave/waved
+
+ENTRYPOINT /opt/wave/waved
