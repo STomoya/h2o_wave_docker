@@ -1,7 +1,7 @@
-from h2o_wave import site, ui
+from h2o_wave import site, ui, main
 
-# Access the web page at http://localhost:10101/demo
-page = site['/demo']
+# Access the web page at http://localhost:10101/
+page = site['/']
 
 # Add some content.
 page['example'] = ui.markdown_card(

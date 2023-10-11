@@ -1,28 +1,49 @@
+---
 version: '3'
 
 services:
+  server:
+    image: h2o_wave:1.0.0
+    build:
+      context: .
+      dockerfile: ./docker/wave/Dockerfile
+      args:
+        - WAVE_VERSION=1.0.0
+    networks:
+      default:
+        aliases:
+          - server
+    ports:
+      - '10101:10101/tcp'
+
   app:
+    image: h2o_app:latest
     build:
       context: .
       dockerfile: ./docker/python/Dockerfile
     working_dir: /usr/src
     environment:
       # https://h2oai.github.io/wave/docs/configuration#configuring-your-app
-      - H2O_APP_ADDRESS=http://server:8000
+      #- H2O_APP_ADDRESS=http://server:8000
       - H2O_WAVE_ADDRESS=http://server:10101
     volumes:
       - .:/usr/src
     depends_on:
-      - server
+      - server 
+    command: wave run --no-autostart --no-reload  hello
+    ports:
+      - '8000:8000/tcp'
     tty: true
 
-  server:
-    build:
-      context: .
-      dockerfile: ./docker/wave/Dockerfile
-      args:
-        - WAVE_VERSION=0.10.0
-    working_dir: /usr/wave
-    command: ./waved
+  notebook:
+    image: jupyter/minimal-notebook
+    environment:
+      JUPYTER_ENABLE_LAB: 'yes'
+      JUPYTER_TOKEN: 'docker'
+    restart: unless-stopped
     ports:
-      - '10101:10101'
+      - '8888:8888/tcp'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - .:/home/jovyan/work
+...
