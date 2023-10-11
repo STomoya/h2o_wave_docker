@@ -12,6 +12,6 @@ RUN curl -L https://github.com/h2oai/wave/releases/download/v${WAVE_VERSION}/wav
     && tar -xzf wave-${WAVE_VERSION}-linux-amd64.tar.gz \
     && mv wave-${WAVE_VERSION}-linux-amd64 /usr/wave
 
-ENV H2O_WAVE_LISTEN=0.0.0.0:{PORT}
-EXPOSE {PORT}
+ENV H2O_WAVE_LISTEN=0.0.0.0:${PORT}
+EXPOSE ${PORT}
 ENTRYPOINT /usr/wave/waved
